@@ -92,8 +92,8 @@ export default class Notion {
     }
   }
 
-  async createPage(_data) {
-    const data = await _data;
+  async createPage(data) {
+    // const data = await _data;
     const databaseId = document.getElementById('js-select-database').value;
 
     // XXX check if the entry has already been bookmarked
@@ -103,7 +103,13 @@ export default class Notion {
     );
     if (duplicateEntries.length != 0) return duplicateEntries[0];
 
-    const title = data.title;
+    const topics = data.topics;
+    const topicsMultiSelect = topics.map((topic) => {
+      return { name: topic };
+    });
+
+    const title = data.title.trim().replace(/\s+/g, ' ');
+
     const abst = data.abst;
     const paperUrl = data.url;
     const authorsFormatted = data.authors.join(', ');
@@ -122,6 +128,11 @@ export default class Notion {
         database_id: databaseId,
       };
       const properties = {
+        Topics: {
+          id: 'topics',
+          type: 'multi_select',
+          multi_select: topicsMultiSelect,
+        },
         Title: {
           id: 'title',
           type: 'title',

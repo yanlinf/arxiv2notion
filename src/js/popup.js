@@ -52,7 +52,16 @@ class UI {
   setupSaveButton() {
     document.getElementById('js-save').addEventListener('click', async () => {
       this.showProgressBar();
+
+      this.data = await this.data
+
+      const topics_text = document.getElementById('js-topics').value;
+      const topics = topics_text.split(',').map(topic => topic.trim());
+
+      this.data.topics = topics;
+
       const data = await this.client.createPage(this.data);
+
       if (data.status && data.status == 400) {
         this.renderMessage('danger', `[${data.code}] ${data.message}`);
         return;
